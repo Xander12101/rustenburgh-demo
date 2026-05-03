@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Rustenburgh — Karte Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F6F3EE;--bg2:#FFFFFF;--bg3:#EDEAE4;--text:#1A1714;--text2:#6B6560;--text3:#A09990;--accent:#C4521A;--accent-light:#F9EDE5;--green:#3D6B4A;--green-light:#E8F2EB;--red:#B03A2E;--red-light:#FAECEA;--amber:#A0720A;--amber-light:#FDF3DC;--blue:#2560A0;--blue-light:#E8F0FB;--border:rgba(26,23,20,0.1);--border2:rgba(26,23,20,0.06);--shadow:0 1px 3px rgba(26,23,20,0.07),0 4px 16px rgba(26,23,20,0.04);--radius:14px;--radius-sm:9px;--font-display:'Playfair Display',Georgia,serif;--font-body:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:var(--font-body);background:#C8C4BE;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:28px 16px;}
+.phone{width:393px;min-height:852px;background:var(--bg);border-radius:48px;overflow:hidden;box-shadow:0 24px 72px rgba(0,0,0,0.28),0 0 0 1px rgba(0,0,0,0.12);position:relative;display:flex;flex-direction:column;height:852px;}
+.status-bar{background:var(--bg);padding:16px 26px 8px;display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:500;color:var(--text);flex-shrink:0;}
+.status-icons{display:flex;align-items:center;gap:5px;}
+.alert-bar{background:var(--accent);padding:9px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:background .18s;flex-shrink:0;}
+.alert-bar:hover{background:#B5481A;}
+.alert-pulse{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.95);flex-shrink:0;animation:pulse 2.2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.85)}}
+.alert-text{font-size:12px;color:rgba(255,255,255,0.95);line-height:1.35;flex:1;}
+#app-screens{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;}
+.screen{display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0;}
+.screen.active{display:flex;}
+.scroll-area{overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;}
+.scroll-area::-webkit-scrollbar{display:none;}
+.top-bar{padding:14px 18px 12px;display:flex;align-items:center;gap:12px;background:var(--bg);border-bottom:0.5px solid var(--border);flex-shrink:0;}
+.back-btn{width:34px;height:34px;border-radius:50%;background:var(--bg3);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);flex-shrink:0;transition:background .15s;}
+.back-btn:hover{background:var(--border);}
+.top-bar-title{font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--text);}
+.top-bar-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+.brand-header{padding:22px 20px 14px;background:var(--bg);}
+.brand-name{font-family:var(--font-display);font-size:26px;font-weight:600;color:var(--text);letter-spacing:-0.5px;}
+.brand-tagline-de{font-size:13px;color:var(--text2);margin-top:3px;line-height:1.4;}
+.brand-tagline-en{font-size:11px;color:var(--text3);margin-top:2px;font-style:italic;}
+.nav-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 14px;}
+.nav-card{background:var(--bg2);border-radius:var(--radius);padding:16px 14px 14px;border:0.5px solid var(--border2);cursor:pointer;transition:transform .14s,box-shadow .14s;box-shadow:var(--shadow);}
+.nav-card:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(26,23,20,0.1);}
+.nav-card:active{transform:scale(0.975);}
+.nav-card.alert-card{border-color:rgba(196,82,26,0.25);}
+.nav-icon-wrap{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:11px;}
+.nav-card-label{font-size:13px;font-weight:500;color:var(--text);}
+.nav-card-hint{font-size:11px;color:var(--text3);margin-top:3px;}
+.nav-card-hint.warn{color:var(--accent);}
+.nav-card-hint.ok{color:var(--green);}
+/* Full-width map preview card */
+.map-preview-card{display:flex;align-items:center;gap:14px;padding:14px 16px;margin:0 16px 14px;background:var(--bg2);border-radius:var(--radius);border:0.5px solid rgba(196,82,26,0.2);cursor:pointer;transition:transform .14s,box-shadow .14s;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+.map-preview-card:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(26,23,20,0.1);}
+.map-preview-card:active{transform:scale(0.99);}
+.map-preview-card .nav-icon-wrap{margin-bottom:0;flex-shrink:0;}
+.map-preview-bg{position:absolute;right:-10px;top:50%;transform:translateY(-50%);opacity:0.06;font-size:80px;pointer-events:none;}
+.plan-preview{margin:0 16px 14px;background:var(--bg2);border-radius:var(--radius);padding:14px 16px;border:0.5px solid var(--border2);box-shadow:var(--shadow);cursor:pointer;}
+.plan-preview-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;}
+.plan-preview-title{font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.9px;}
+.plan-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid var(--border2);}
+.plan-row:last-child{border-bottom:none;}
+.plan-key{font-size:12px;color:var(--text2);}
+.plan-val{font-size:12px;font-weight:500;}
+.plan-val.empty{color:var(--accent);}
+.plan-val.filled{color:var(--green);}
+.tip-card{margin:0 16px 6px;background:var(--green-light);border-radius:var(--radius);padding:14px 16px;border:0.5px solid rgba(61,107,74,0.18);display:flex;gap:12px;align-items:flex-start;}
+.tip-title{font-size:12px;font-weight:500;color:var(--green);margin-bottom:3px;}
+.tip-text{font-size:12px;color:var(--text);line-height:1.5;}
+.scenario-list{padding:8px 0 16px;}
+.scenario-section-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.9px;padding:12px 20px 6px;}
+.scenario-item{display:flex;align-items:center;padding:13px 20px;cursor:pointer;border-bottom:0.5px solid var(--border2);transition:background .13s;gap:14px;}
+.scenario-item:hover{background:var(--bg3);}
+.scenario-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.scenario-info{flex:1;}
+.scenario-name{font-size:14px;font-weight:500;color:var(--text);}
+.scenario-desc{font-size:11px;color:var(--text3);margin-top:2px;}
+.section-tabs{display:flex;overflow-x:auto;padding:10px 14px;gap:6px;background:var(--bg);border-bottom:0.5px solid var(--border);flex-shrink:0;}
+.section-tabs::-webkit-scrollbar{display:none;}
+.tab-btn{flex-shrink:0;padding:5px 11px;border-radius:20px;border:0.5px solid var(--border);background:var(--bg2);font-size:11px;color:var(--text2);cursor:pointer;font-family:var(--font-body);transition:all .14s;white-space:nowrap;}
+.tab-btn.active{background:var(--text);color:var(--bg);border-color:var(--text);font-weight:500;}
+.tab-btn:hover:not(.active){background:var(--bg3);}
+.section-content{padding:20px 20px 8px;}
+.section-heading{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.9px;margin-bottom:13px;}
+.section-body{font-size:14px;line-height:1.72;color:var(--text);}
+.section-body p{margin-bottom:10px;}
+.section-body p:last-child{margin-bottom:0;}
+.steps{list-style:none;margin-bottom:4px;}
+.step{display:flex;gap:11px;margin-bottom:10px;align-items:flex-start;}
+.step-num{width:22px;height:22px;border-radius:50%;background:var(--accent);color:white;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.step-text{font-size:13.5px;line-height:1.62;color:var(--text);}
+.stay-go{background:var(--bg3);border-radius:var(--radius-sm);padding:13px 14px;margin-bottom:4px;}
+.stay-go-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;}
+.stay-go-row:last-child{margin-bottom:0;}
+.badge{flex-shrink:0;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap;margin-top:2px;}
+.badge-stay{background:var(--green-light);color:var(--green);}
+.badge-go{background:var(--red-light);color:var(--red);}
+.badge-warning{background:var(--amber-light);color:var(--amber);}
+.stay-go-text{font-size:13px;line-height:1.5;color:var(--text);}
+.warning-box{background:var(--amber-light);border-left:2.5px solid var(--amber);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:11px 13px;margin:12px 0 4px;font-size:13px;line-height:1.52;color:var(--text);}
+.kit-items{margin-bottom:4px;}
+.kit-item{display:flex;align-items:center;gap:13px;padding:10px 0;border-bottom:0.5px solid var(--border2);cursor:pointer;}
+.kit-item:last-child{border-bottom:none;}
+.kit-icon-wrap{width:30px;height:30px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.kit-name{font-size:13px;color:var(--text);flex:1;line-height:1.4;}
+.kit-check{width:21px;height:21px;border-radius:6px;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;background:var(--bg2);}
+.kit-check.checked{background:var(--green);border-color:var(--green);}
+.related-section{padding:16px 20px;border-top:0.5px solid var(--border2);}
+.related-title{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.9px;margin-bottom:10px;}
+.related-chips{display:flex;flex-wrap:wrap;gap:7px;}
+.related-chip{padding:6px 12px;background:var(--bg3);border-radius:20px;font-size:12px;color:var(--text2);cursor:pointer;border:0.5px solid var(--border);transition:background .13s;}
+.related-chip:hover{background:var(--border);}
+.kit-full-section{padding:16px 18px 6px;}
+.kit-full-title{font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.9px;margin-bottom:11px;}
+.kit-full-card{background:var(--bg2);border-radius:var(--radius);padding:4px 16px;border:0.5px solid var(--border);margin-bottom:10px;box-shadow:var(--shadow);}
+.kit-progress-label{font-size:12px;color:var(--text2);margin:12px 18px 7px;display:flex;justify-content:space-between;}
+.kit-progress{margin:0 18px 16px;background:var(--bg3);border-radius:20px;height:5px;overflow:hidden;}
+.kit-progress-bar{height:100%;background:var(--green);border-radius:20px;transition:width .35s ease;}
+.plan-section{padding:18px 18px 6px;}
+.plan-section-title{font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.plan-section-desc{font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.55;}
+.field-group{margin-bottom:13px;}
+.field-label{font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:6px;}
+.field-input{width:100%;padding:11px 13px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg2);font-family:var(--font-body);font-size:14px;color:var(--text);outline:none;transition:border-color .15s;}
+.field-input:focus{border-color:var(--accent);}
+.field-input::placeholder{color:var(--text3);}
+.field-hint{font-size:11px;color:var(--text3);margin-top:4px;line-height:1.45;}
+.save-btn{width:calc(100% - 36px);margin:10px 18px 18px;padding:14px;background:var(--text);color:var(--bg);border:none;border-radius:var(--radius);font-family:var(--font-body);font-size:14px;font-weight:500;cursor:pointer;transition:background .15s;}
+.save-btn:hover{background:#2A2623;}
+.saved-msg{text-align:center;font-size:12px;color:var(--green);padding-bottom:4px;display:none;}
+.divider{height:0.5px;background:var(--border2);margin:0 18px;}
+.hilfe-card{margin:0 16px 10px;background:var(--bg2);border-radius:var(--radius);overflow:hidden;border:0.5px solid var(--border);box-shadow:var(--shadow);cursor:pointer;}
+.hilfe-card-header{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.hilfe-card-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.hilfe-card-info{flex:1;}
+.hilfe-card-title{font-size:14px;font-weight:500;color:var(--text);}
+.hilfe-card-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+.hilfe-toggle{color:var(--text3);transition:transform .2s;flex-shrink:0;}
+.hilfe-card.open .hilfe-toggle{transform:rotate(180deg);}
+.hilfe-body{display:none;padding:4px 16px 16px;border-top:0.5px solid var(--border2);}
+.hilfe-card.open .hilfe-body{display:block;}
+.hilfe-step{display:flex;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border2);align-items:flex-start;}
+.hilfe-step:last-child{border-bottom:none;}
+.hilfe-num{width:24px;height:24px;border-radius:50%;background:var(--red-light);color:var(--red);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.hilfe-text{font-size:13px;line-height:1.52;color:var(--text);padding-top:3px;}
+.fast-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
+.fast-item{background:var(--red-light);border-radius:var(--radius-sm);padding:11px 12px;}
+.fast-letter{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--red);}
+.fast-word{font-size:11px;font-weight:500;color:var(--red);margin-top:1px;}
+.fast-desc{font-size:11px;color:var(--text2);margin-top:4px;line-height:1.4;}
+.bottom-nav{display:flex;background:var(--bg2);border-top:0.5px solid var(--border);padding:8px 0 22px;flex-shrink:0;}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 0;cursor:pointer;background:none;border:none;font-family:var(--font-body);transition:opacity .13s;}
+.nav-btn:active{opacity:0.55;}
+.nav-btn-label{font-size:9.5px;color:var(--text3);font-weight:400;}
+.nav-btn.active .nav-btn-label{color:var(--accent);font-weight:500;}
+
+/* =========================================
+   MAP SCREEN STYLES
+   ========================================= */
+.map-filter-bar{display:flex;overflow-x:auto;padding:8px 12px;gap:6px;background:var(--bg);border-bottom:0.5px solid var(--border);flex-shrink:0;-webkit-overflow-scrolling:touch;}
+.map-filter-bar::-webkit-scrollbar{display:none;}
+.map-filter-chip{flex-shrink:0;padding:5px 10px;border-radius:20px;border:1px solid;font-size:11px;font-family:var(--font-body);font-weight:500;cursor:pointer;white-space:nowrap;transition:all .14s;display:flex;align-items:center;gap:4px;}
+.map-filter-chip.dimmed{background:var(--bg2)!important;border-color:var(--border)!important;color:var(--text3)!important;opacity:0.65;}
+.screen-map-inner{flex:1;position:relative;min-height:0;}
+#map{position:absolute;top:0;left:0;right:0;bottom:0;}
+.map-offline-badge{margin-left:auto;padding:3px 9px;background:var(--green-light);color:var(--green);border-radius:20px;font-size:10px;font-weight:500;flex-shrink:0;}
+.map-attribution{position:absolute;bottom:8px;right:8px;font-size:9px;color:rgba(26,23,20,0.5);background:rgba(255,255,255,0.82);padding:2px 7px;border-radius:4px;pointer-events:none;z-index:10;font-family:var(--font-body);}
+.map-center-dot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:10px;height:10px;background:var(--accent);border-radius:50%;border:2px solid white;box-shadow:0 0 0 4px rgba(196,82,26,0.2);pointer-events:none;z-index:5;}
+.map-info-bar{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.92);border-radius:20px;padding:4px 12px;font-size:10px;color:var(--text2);font-family:var(--font-body);pointer-events:none;z-index:10;backdrop-filter:blur(4px);border:0.5px solid var(--border);white-space:nowrap;}
+
+/* MapLibre popup override */
+.maplibregl-popup-content{font-family:var(--font-body)!important;border-radius:10px!important;padding:10px 12px!important;box-shadow:0 4px 20px rgba(0,0,0,0.13)!important;border:0.5px solid var(--border)!important;}
+.maplibregl-popup-close-button{font-size:16px;color:var(--text3);top:4px;right:6px;}
+.maplibregl-ctrl-attrib{display:none!important;}
+.maplibregl-ctrl-logo{display:none!important;}
+.maplibregl-ctrl-bottom-right,.maplibregl-ctrl-bottom-left{display:none!important;}
+
+/* POI marker */
+.poi-marker{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.18);transition:transform .15s;border:1.5px solid;}
+.poi-marker:hover{transform:scale(1.18);}
+.home-dot-marker{width:12px;height:12px;border-radius:50%;background:var(--accent);border:2.5px solid white;box-shadow:0 0 0 4px rgba(196,82,26,0.22),0 2px 8px rgba(196,82,26,0.3);cursor:default;}
+
+@media(max-width:430px){body{padding:0;background:var(--bg);}.phone{width:100%;border-radius:0;min-height:100vh;height:auto;box-shadow:none;}.screen{height:auto;}.screen-map-inner{height:400px;position:relative;flex:none;}}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="status-bar">
+    <span>9:41</span>
+    <div class="status-icons">
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="3" width="3" height="9" rx="1" opacity="0.3"/><rect x="4.5" y="2" width="3" height="10" rx="1" opacity="0.5"/><rect x="9" y="0.5" width="3" height="11.5" rx="1" opacity="0.75"/><rect x="13.5" y="0" width="2.5" height="12" rx="1"/></svg>
+      <svg width="16" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1.42 9a16 16 0 0121.16 0M5 12.55a11 11 0 0114.08 0M8.53 16.11a6 6 0 016.95 0M12 20h.01"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="currentColor"><rect x="0.5" y="0.5" width="20" height="11" rx="3.5" stroke="currentColor" stroke-opacity="0.35" fill="none"/><rect x="1.5" y="1.5" width="17" height="9" rx="2.5" fill="currentColor"/><rect x="21.5" y="3.5" width="2.5" height="5" rx="1.25" fill="currentColor" opacity="0.4"/></svg>
+    </div>
+  </div>
+  <div class="alert-bar" onclick="A.ninaAlert()">
+    <div class="alert-pulse"></div>
+    <div class="alert-text" id="alert-text"></div>
+    <div id="alert-chevron"></div>
+  </div>
+  <div id="app-screens"></div>
+</div>
+
+<script>
+// ============================================================
+// ICONS
+// ============================================================
+function ic(name,color,size,sw){sw=sw||1.5;const d=RAW_ICONS[name]||RAW_ICONS['info'];return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex-shrink:0;">${d}</svg>`;}
+const RAW_ICONS={'home':'<path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/>','shield-alert':'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>','package':'<path d="M16.5 9.4l-9-5.19M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>','heart-pulse':'<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0016.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 002 8.5c0 2.3 1.5 4.05 3 5.5l7 7 7-7z"/><polyline points="8,13 10,10 12,14 14,9 16,12"/>','user-circle':'<circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>','chevron-left':'<polyline points="15 18 9 12 15 6"/>','chevron-right':'<polyline points="9 18 15 12 9 6"/>','chevron-down':'<polyline points="6 9 12 15 18 9"/>','flashlight':'<path d="M9 2h6l2 7H7L9 2z"/><path d="M7 9v4a5 5 0 0010 0V9"/><line x1="12" y1="13" x2="12" y2="17"/>','battery-charging':'<path d="M5 18H3a2 2 0 01-2-2V8a2 2 0 012-2h3.19M15 6h2a2 2 0 012 2v8a2 2 0 01-2 2h-3.19"/><line x1="23" y1="13" x2="23" y2="11"/><polyline points="11 6 7 12 13 12 9 18"/>','radio':'<path d="M16.24 7.76A6 6 0 0112 6a6 6 0 00-4.24 1.76"/><path d="M20.07 3.93A10 10 0 0012 1a10 10 0 00-8.07 2.93"/><circle cx="12" cy="12" r="2"/><line x1="12" y1="14" x2="12" y2="21"/><line x1="8" y1="21" x2="16" y2="21"/>','cross-circle':'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>','file-text':'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>','folder':'<path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>','hand':'<path d="M18 11V6a2 2 0 00-2-2 2 2 0 00-2 2M14 10V4a2 2 0 00-2-2 2 2 0 00-2 2v2M10 10.5V6a2 2 0 00-2-2 2 2 0 00-2 2v8"/><path d="M18 11a2 2 0 114 0v1a4 4 0 01-4 4h-2h-1a7 7 0 01-7-7v-3a2 2 0 012-2 2 2 0 012 2v2"/>','mask':'<path d="M3 11v3a9 9 0 0018 0v-3"/><path d="M3 11a7 7 0 017-7h4a7 7 0 017 7H3z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/>','layers':'<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>','flame':'<path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 3z"/>','droplets':'<path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0014 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 01-11.91 4.97"/>','archive':'<polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/>','pill':'<path d="M10.5 20H4a2 2 0 01-2-2V6a2 2 0 012-2h16a2 2 0 012 2v7.5"/><circle cx="17" cy="17" r="5"/><path d="M14 17h6"/>','banknote':'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/>','triangle-alert':'<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>','lightbulb':'<path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0018 8 6 6 0 006 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 018.91 14"/>','info':'<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>','phone':'<path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.64A2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.17a16 16 0 006.92 6.92l1.55-1.55a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>','bandage':'<path d="M10 10c-.5-.5-1.2-.5-1.7 0l-4.6 4.6c-.5.5-.5 1.2 0 1.7l3 3c.5.5 1.2.5 1.7 0l4.6-4.6c.5-.5.5-1.2 0-1.7l-3-3z"/><path d="M14 14c.5.5 1.2.5 1.7 0l4.6-4.6c.5-.5.5-1.2 0-1.7l-3-3c-.5-.5-1.2-.5-1.7 0l-4.6 4.6c-.5.5-.5 1.2 0 1.7l3 3z"/>','brain':'<path d="M9.5 2A2.5 2.5 0 007 4.5v0A2.5 2.5 0 004.5 7v0A2.5 2.5 0 002 9.5V12a2 2 0 002 2h2a5 5 0 005 5h2a5 5 0 005-5h2a2 2 0 002-2V9.5A2.5 2.5 0 0017.5 7v0A2.5 2.5 0 0015 4.5v0A2.5 2.5 0 0012.5 2h-3z"/>','activity':'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>','check':'<polyline points="20 6 9 17 4 12"/>',
+// Map nav icons
+'map-pin':'<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>',
+'map':'<path d="M1 6l7-4 8 4 7-4v16l-7 4-8-4-7 4V6z"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/>',
+// POI category icons (SF Symbol style, stroke-based)
+'poi-hospital':'<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/>',
+'poi-police':'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="3"/>',
+'poi-shelter':'<path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><circle cx="12" cy="13" r="2.5"/><path d="M8.5 21c0-1.93 1.57-3.5 3.5-3.5s3.5 1.57 3.5 3.5"/>',
+};
+
+// ============================================================
+// CONTENT — injected by build.py (single-file) or fetched in dev mode
+// ============================================================
+const CONTENT = {"lang":"de","brand":{"name":"Rustenburgh","tagline_primary":"Damit du weißt, dass du vorbereitet bist.","tagline_secondary":"One afternoon to set it up. Peace of mind after that."},"ui":{"alert_bar":"Warnung aktiv in deiner Region — tippe hier","alert_popup_title":"NINA — Notfall-Informations- und Nachrichten-App","alert_popup_body":"In der echten Rustenburgh-App öffnet dieser Button die aktuellen Warnungen für deine Region. In diesem Mockup nicht aktiv.","nav_home":"Home","nav_emergencies":"Notfälle","nav_kit":"Kit","nav_firstaid":"Erste Hilfe","nav_plan":"Mein Plan","emergencies_title":"Notfälle","emergencies_subtitle":"Wähle ein Szenario","emergencies_section_label":"Szenarien für deine Region","scenario_subtitle":"Tippe die Abschnitte durch","related_title":"Verwandte Szenarien","kit_title":"Mein Kit","kit_subtitle":"Checkliste","kit_progress_of":"von","kit_progress_done":"erledigt","kit_included_title":"Im Rustenburgh Kit (geliefert)","kit_personal_title":"Du fügst hinzu (persönlich)","kit_warning_title":"Vergiss nicht","kit_warning_body":"Medikamentenliste und Familienplan ausfüllen — das rettet im Notfall Zeit.","kit_nav_complete":"Vollständig ✓","firstaid_title":"Erste Hilfe","firstaid_subtitle":"Schnellzugriff · In 5 Sekunden","firstaid_call_title":"Immer zuerst 112 anrufen","firstaid_call_body":"Der Disponent führt dich in Echtzeit. Du musst nicht alles wissen — du musst nur anrufen.","plan_title":"Mein Plan","plan_subtitle":"Einmal ausfüllen — überall sichtbar","plan_intro":"Diese Felder erscheinen automatisch in jedem Notfallszenario. Einmal ausfüllen — dann bist du wirklich Rustenburgh.","plan_missing_singular":"Feld fehlt","plan_missing_plural":"Felder fehlen","plan_complete":"Vollständig ✓","plan_save_button":"Plan speichern","plan_saved_message":"✓ Gespeichert — erscheint jetzt in allen Szenarien","plan_not_entered":"Noch nicht eingetragen","plan_nav_hint_missing":"Felder fehlen","home_plan_title":"Mein Notfallplan","home_tip_title":"Wusstest du?","home_tip_body":"60% der Deutschen sehen das Notfallrisiko als gestiegen — aber nur 30% sind vorbereitet. Du machst gerade den Unterschied.","tab_labels":["Was ist das?","Erkennen","Erste 10 Min","Bleiben?","Nächste Stunden","Dein Kit","Familie","Vorbei?"],"tab_full_labels":["Was ist das?","Wie erkenne ich es?","Erste 10 Minuten","Bleiben oder gehen?","Die nächsten Stunden","Was brauchst du aus deinem Kit?","Familie & Kommunikation","Wann ist es vorbei?"],"badge_stay":"Bleiben","badge_go":"Gehen","badge_your_plan":"Dein Plan","plan_ref_not_entered":"Noch nicht eingetragen"},"plan_fields":[{"section_title":"Treffpunkt & Kommunikation","section_desc":"Wenn Handys nicht funktionieren, braucht ihr einen festen Plan. Sprich das mit deiner Familie ab.","fields":[{"id":"treffpunkt","label":"Treffpunkt (Adresse)","placeholder":"z.B. Vor dem Rathaus, Marktplatz 1","hint":"Eine konkrete Adresse die jeder kennt — nicht nur 'beim Park'.","preview":true},{"id":"uhrzeit","label":"Treffzeit","placeholder":"z.B. 18:00 Uhr am selben Tag","hint":"Wann erscheinen alle am Treffpunkt wenn ihr getrennt seid.","preview":true},{"id":"kontakt","label":"Kontakt außerhalb der Region","placeholder":"z.B. Tante Greta, 0221 123456","hint":"Eine Person in einer anderen Stadt als Vermittler.","preview":true}]},{"section_title":"Wichtige Telefonnummern","section_desc":"Aufschreiben — nicht nur im Handy. Handy kann leer, kaputt oder weg sein.","fields":[{"id":"nummer1","label":"Nummer 1","placeholder":"z.B. Papa: 0171 987654","hint":"","preview":true},{"id":"nummer2","label":"Nummer 2","placeholder":"z.B. Nachbarin Petra: 0152 456789","hint":"","preview":false},{"id":"arzt","label":"Hausarzt","placeholder":"z.B. Dr. Müller: 030 123456","hint":"","preview":false}]},{"section_title":"Medikamente","section_desc":"Name, Dosis, Häufigkeit für jeden im Haushalt. Rettungskräfte werden das fragen.","fields":[{"id":"meds1","label":"Person 1","placeholder":"z.B. Anna: Metformin 500mg, 2x täglich","hint":"","preview":false},{"id":"meds2","label":"Person 2","placeholder":"z.B. Tom: Ventolin bei Bedarf","hint":"","preview":false},{"id":"allergien","label":"Allergien","placeholder":"z.B. Anna: Penicillin-Allergie","hint":"","preview":false}]}],"kit":{"items_included":[{"icon":"flashlight","color":"#C4521A","label":"Batterie-Lampe & Taschenlampe"},{"icon":"battery-charging","color":"#C4521A","label":"Powerbank (20.000 mAh)"},{"icon":"radio","color":"#C4521A","label":"Batterie-Radio"},{"icon":"cross-circle","color":"#C4521A","label":"Erste-Hilfe-Set (vollständig)"},{"icon":"file-text","color":"#C4521A","label":"Erste-Hilfe-Referenzkarte (laminiert)"},{"icon":"folder","color":"#C4521A","label":"Wasserdichte Dokumentenmappe"},{"icon":"hand","color":"#C4521A","label":"Einmalhandschuhe (10er Pack)"},{"icon":"mask","color":"#C4521A","label":"Masken (5er Pack)"},{"icon":"layers","color":"#C4521A","label":"Notfalldecke (Folie)"},{"icon":"flame","color":"#C4521A","label":"Kerzen + Feuerzeug"}],"items_personal":[{"icon":"droplets","color":"#2560A0","label":"Wasservorrat (3L / Person / Tag)"},{"icon":"archive","color":"#2560A0","label":"Haltbare Lebensmittel (5 Tage)"},{"icon":"pill","color":"#2560A0","label":"Persönliche Medikamente (3+ Tage)"},{"icon":"banknote","color":"#2560A0","label":"Bargeld (kleine Scheine)"}]},"firstaid":[{"icon":"heart-pulse","title":"HLW — Herzdruckmassage","subtitle":"Person bewusstlos, atmet nicht normal","type":"steps","steps":["Person auf den Rücken, harte Unterlage","Handballen auf Mitte des Brustkorbs, zweite Hand obendrauf","Arme gestreckt — 5–6 cm tief drücken, 100–120× pro Minute","Nach je 30 Drücken: 2 Beatmungen wenn möglich","Nicht aufhören bis Rettungsdienst übernimmt"]},{"icon":"brain","title":"FAST — Schlaganfall erkennen","subtitle":"Jede Minute zählt","type":"fast","fast":[{"letter":"F","word":"Face","desc":"Gesicht hängt auf einer Seite?"},{"letter":"A","word":"Arms","desc":"Arm kann nicht gehalten werden?"},{"letter":"S","word":"Speech","desc":"Sprache verwaschen oder weg?"},{"letter":"T","word":"Time","desc":"Sofort 112 anrufen"}]},{"icon":"bandage","title":"Starke Blutung stoppen","subtitle":"Direkte Wundversorgung","type":"steps","steps":["Einmalhandschuhe anziehen wenn verfügbar","Sauberste verfügbare Materialien direkt auf die Wunde drücken","Fest und dauerhaft Druck halten — nicht nachschauen","Wundverband aus dem Kit verwenden wenn vorhanden","112 anrufen falls noch nicht geschehen"]},{"icon":"activity","title":"Herzinfarkt erkennen","subtitle":"Mögliche Anzeichen","type":"text","paragraphs":["Drückende Schmerzen in der Brust, ausstrahlend in den linken Arm, Kiefer oder Rücken. Begleitet von Übelkeit, Schweißausbruch oder Kurzatmigkeit.","Sofort 112 anrufen. Person hinsetzen oder hinlegen. Nicht allein lassen."]}],"scenarios":[{"key":"stromausfall","name":"Stromausfall","desc":"Strom weg für Stunden oder Tage","color":"#C4521A","related":["kommunikation","versorgung","unwetter"],"sections":[{"type":"text","paragraphs":["Der Strom ist weg und könnte Stunden oder Tage wegbleiben. Das betrifft Heizung, Kühlschrank, Beleuchtung, Laden von Handys und die Möglichkeit zu bezahlen.","Das klingt dramatischer als es ist. Mit deinem Kit ist das sehr gut zu bewältigen."]},{"type":"text","paragraphs":["Lampen und Geräte hören plötzlich auf zu funktionieren. Nachbarn sind ebenfalls betroffen — es ist nicht nur deine Sicherung. Straßenlaternen sind aus. Die NINA-App zeigt Warnungen für deine Region."]},{"type":"steps","steps":["Sicherungskasten prüfen — eigenen Defekt ausschließen","Nachbarn fragen — Ausfall bestätigen","NINA-App öffnen, auf offizielle Updates warten","Kühlschrank auf kälteste Stufe — und nicht mehr öffnen","Alle im Haushalt ruhig informieren"]},{"type":"stay_go","stay":{"label":"Bleiben","text":"Wasser vorhanden, kein Frost, Vorräte für mehrere Tage"},"go":{"label":"Gehen","text":"Winter, Wohnung unter 10°C, medizinische Geräte nötig"}},{"type":"text","paragraphs":["Batterie-Lampe zentral aufstellen. Powerbank laden. Badewanne und Behälter mit Wasser füllen — Pumpen können später ausfallen.","Kühlschrankinhalt zuerst essen. Batterie-Radio für Updates (Bayern 1, HR1 bleiben auf Sendung). Jemanden außerhalb der Region kurz informieren."]},{"type":"kit_ref","items":["flashlight","battery-charging","radio","droplets","archive","flame"]},{"type":"text_plan","paragraphs":["SMS verbraucht weniger Netzkapazität als Anrufe — zuerst SMS versuchen. Wenn Handys ausfallen: Treffpunkt aus deinem Plan.","Kinder beruhigen. Ältere Nachbarn kontrollieren — sie sind am stärksten gefährdet."],"plan_ref":"treffpunkt"},{"type":"text_warning","paragraphs":["Lampen und Geräte funktionieren wieder. Offizielle Entwarnung über NINA oder Radio."],"warning":"Kühlschrank prüfen — alles Verderbliche über 2h über 4°C muss weg. Kit sofort wieder auffüllen."}]},{"key":"hochwasser","name":"Hochwasser","desc":"Überflutung in deiner Region","color":"#2E6FA0","related":["evakuierung","versorgung","kommunikation"],"sections":[{"type":"text","paragraphs":["Ein Fluss oder eine Drainage überläuft. Anders als die meisten Notfälle gibt Hochwasser oft etwas Vorwarnzeit. Nutze sie.","Sobald Wasser in dein Haus eindringt oder Straßen blockiert, schwinden deine Optionen schnell."]},{"type":"text","paragraphs":["NINA sendet eine Hochwasserwarnung. Behörden mit Lautsprecherfahrzeugen. Der nahe Fluss steigt ungewöhnlich schnell. Nachbarn bewegen Autos oder Sandsäcke. Wasser erscheint im Keller oder Erdgeschoss."]},{"type":"steps","steps":["NINA öffnen und Warnstufe für deine Region lesen","Gas und Strom abschalten wenn Wasser eindringt","Dokumente, Wertsachen und Kit in den obersten Stock","Auto JETZT auf höheres Gelände — nicht später","Nicht in den Keller wenn Wasser steigt"],"warning":"Nie durch überflutete Straßen fahren. 30 cm fließendes Wasser kann ein Auto mitreißen."},{"type":"stay_go","stay":{"label":"Bleiben","text":"Im Obergeschoss, keine Evakuierungsanordnung, kein Wasser im Gebäude"},"go":{"label":"Sofort gehen","text":"Behörden ordnen Evakuierung an. Wasser dringt ins Erdgeschoss. Fluchtweg könnte bald gesperrt sein."}},{"type":"text","paragraphs":["Bei Evakuierung: Kit, Dokumente, Medikamente, Handy und warme Kleidung — nicht mehr. Nur offizielle Routen. Nicht in Hochwasserwasser waten — es enthält Abwasser und Chemikalien.","Schäden sofort fotografieren für die Versicherung sobald es sicher ist."]},{"type":"kit_ref","items":["package","folder","pill","droplets","radio","battery-charging"]},{"type":"text_plan","paragraphs":["Jetzt wird dein Familienplan wichtig. Im Notfallzentrum sofort registrieren damit getrennte Familienmitglieder dich finden können."],"plan_ref":"treffpunkt"},{"type":"text_warning","paragraphs":["Offizielle Entwarnung über NINA oder Radio. Wasser vollständig zurückgegangen."],"warning":"Vor Betreten: Gaskontrolle, Strukturschäden prüfen. Strom erst nach Fachinspektion einschalten."}]},{"key":"evakuierung","name":"Evakuierung","desc":"Behörden ordnen Verlassen an","color":"#A07520","related":["hochwasser","industrie","kommunikation"],"sections":[{"type":"text","paragraphs":["Evakuierung bedeutet: Behörden sagen dir, sofort zu gehen. In Deutschland passiert das öfter als man denkt — WWII-Bomben werden mehrmals jährlich gefunden.","Deutsche Behörden sind sehr gut organisiert. Dein Job ist es, schnell und ruhig zu gehen."]},{"type":"text","paragraphs":["NINA sendet eine Evakuierungswarnung für deine Postleitzahl. Polizei oder Feuerwehr mit Lautsprechern in deiner Straße. Lokales Radio kündigt einen Evakuierungsradius an — und deine Adresse liegt darin."]},{"type":"steps","steps":["Warnung über NINA oder Radio bestätigen","Vorgepacktes Kit greifen — dafür ist es da","Gas, Strom und Wasser am Haupthahn abschalten","Medikamente und Dokumente mitnehmen falls nicht im Kit","Haus abschließen und gehen — nicht zögern"],"warning":"Der häufigste Fehler: zu lange warten. Frühes Gehen hält Straßen frei für Rettungskräfte."},{"type":"stay_go","go_only":true,"go":{"label":"Gehen — immer","text":"Bei einer Evakuierungsanordnung gibt es keine Bleiben-Option. Behörden haben das Risiko bewertet."},"note":{"label":"Einzige Frage","text":"Wie schnell kannst du gehen?"}},{"type":"text","paragraphs":["Offizielle Evakuierungsroute nehmen. Zur ausgewiesenen Notunterkunft gehen — wird über NINA und Radio bekannt gegeben. Sofort registrieren. Erst zurückkehren wenn Behörden es explizit sagen."]},{"type":"kit_ref","items":["package","folder","pill","battery-charging"]},{"type":"text_plan","paragraphs":["Das ist der Moment wo dein Familienplan am meisten zählt. Im Notfallzentrum sofort registrieren."],"plan_ref":"treffpunkt"},{"type":"text_warning","paragraphs":["Behörden erteilen offiziell Entwarnung. Bei Bombenentschärfungen: meist innerhalb weniger Stunden."],"warning":"Haus vor dem Betreten prüfen. Gas- und Stromleitungen nach einer Evakuierung inspizieren lassen."}]},{"key":"unwetter","name":"Unwetter","desc":"Sturm, Starkregen, Orkan","color":"#6B6560","related":["stromausfall","evakuierung"],"sections":[{"type":"text","paragraphs":["Ein schwerer Sturm mit extremem Wind, Starkregen oder Hagel. In Deutschland meist ein Sturmtief, manchmal bis Orkan. In der Regel nach einem Tag vorbei.","Die meisten Menschen können das sicher zu Hause aussitzen — wenn sie drinnen bleiben."]},{"type":"text","paragraphs":["DWD oder NINA sendet eine Sturmwarnung. Wind nimmt spürbar und schnell zu. Bäume in der Nähe knacken oder fallen. Lokales Radio sendet Sicherheitswarnungen."]},{"type":"steps","steps":["DWD oder NINA für Schweregrad und Dauer prüfen","Sofort rein und drinnen bleiben","Alle Fenster und Rollläden schließen","Balkon und Garten räumen — alles was zum Geschoss werden könnte","Auto von Bäumen wegparken wenn schnell möglich"]},{"type":"stay_go","stay":{"label":"Fast immer bleiben","text":"Dein Haus ist beim Sturm der sicherste Ort. Draußen gehen ist die Gefahr."},"go":{"label":"Nur gehen wenn","text":"Dach sichtbar beschädigt. Behörden ordnen Evakuierung an. Du bist in einem Mobilheim."},"warning":"Nicht bei Orkan fahren. Umgestürzte Bäume verursachen die meisten Sturmtoten."},{"type":"text","paragraphs":["Von Fenstern fernbleiben während des Sturmschwerpunkts. Bei Stromausfall: Stromausfall-Guide befolgen. Erst nach offiziellem Sturm-Ende nach draußen — nicht in einer kurzen Flaute."]},{"type":"kit_ref","items":["radio","flashlight","battery-charging","droplets","archive"]},{"type":"text","paragraphs":["Sicherstellen dass alle zu Hause sind bevor der Sturm seinen Höhepunkt erreicht. Älteren Nachbarn vorher Bescheid geben — nicht während."]},{"type":"text_warning","paragraphs":["DWD hebt die Sturmwarnung auf. Wind hat deutlich und gleichmäßig nachgelassen."],"warning":"Vor dem Hinausgehen nach oben schauen — Schäden können noch stundenlang herabfallen."}]},{"key":"medizin","name":"Medizinischer Notfall","desc":"Schwere Verletzung oder Erkrankung","color":"#B03A2E","related":["kommunikation"],"sections":[{"type":"text","paragraphs":["Ein medizinischer Notfall ist wenn jemand schwer verletzt oder erkrankt ist und der Rettungsdienst verzögert oder überlastet ist.","Es geht nicht darum, professionelle Versorgung zu ersetzen. Ruhig bleiben und zwei oder drei grundlegende Maßnahmen kennen macht einen enormen Unterschied."]},{"type":"text","paragraphs":["Person bewusstlos oder nicht ansprechbar. Starke Blutung. Atembeschwerden. Herzinfarktzeichen: Brustschmerzen, Schmerzen im linken Arm, Schweißausbruch. Schlaganfall (FAST-Test). Kind hat etwas Gefährliches geschluckt."]},{"type":"steps","steps":["Sofort 112 anrufen — das zuerst, noch vor der Hilfe","In der Leitung bleiben — der Disponent führt dich durch","Wenn bewusstlos und atmet nicht normal: HLW beginnen","Bei starker Blutung: festen dauerhaften Druck ausüben","Person mit möglicher Wirbelsäulenverletzung nicht bewegen"],"warning":"112-Disponenten führen dich in Echtzeit. Du musst nicht alles wissen — du musst nur anrufen."},{"type":"stay_go","stay":{"label":"Bei der Person bleiben","text":"In fast allen Fällen. Bewegung kann es schlimmer machen."},"go":{"label":"Ausnahmen","text":"Feuer, Gas oder Wasser — dann erst aus der Gefahr, dann behandeln."}},{"type":"text","paragraphs":["Person warm und beruhigt halten. Zeitpunkt der Symptome und Medikamente notieren — Sanitäter werden fragen.","Jemanden nach draußen schicken um den Krankenwagen einzuweisen wenn die Adresse schwer zu finden ist."]},{"type":"kit_ref","items":["cross-circle","file-text","pill","hand","flashlight"]},{"type":"text","paragraphs":["Jeder Erwachsene sollte CPR können — ein DRK-Tageskurs rettet Leben. Deine Hausadresse in jedem Familienhandy gespeichert haben.","Medikamentenliste für jeden im Haushalt im Kit aufbewahren — nicht nur im Kopf."]},{"type":"text_warning","paragraphs":["Professionelle Hilfe hat übernommen. Für weniger ernste Situationen: Person ist stabil, nächster Schritt klar."],"warning":"Erste-Hilfe-Set sofort wieder auffüllen. DRK-Kurs für den Haushalt in Betracht ziehen."}]},{"key":"versorgung","name":"Ausfall Versorgung","desc":"Wasser, Gas, Lieferketten","color":"#3D6B4A","related":["stromausfall","kommunikation"],"sections":[{"type":"text","paragraphs":["Öffentliche Infrastruktur bricht zusammen — Trinkwasser, Heizung, Gas oder Geschäfte mit leeren Regalen. Nichts explodiert, aber der Alltag wird schwierig.","Die gute Nachricht: ein gut bestücktes Kit macht das fast unsichtbar."]},{"type":"text","paragraphs":["Wasserhähne trocknen aus oder Druck sinkt deutlich. Behörden erteilen ein Abkochgebot. Gasheizung hört auf zu arbeiten. Supermarktregale dauerhaft leer. Nachbarn berichten von denselben Problemen."]},{"type":"steps","steps":["NINA und Radio prüfen — was ist betroffen und für wie lange?","Sofort Badewannen und alle Behälter mit Wasser füllen","Gas abschalten wenn Versorgungsproblem — kurz lüften","Kit-Vorräte inventarisieren — wie viele Tage reichts?","Nicht sofort in den Supermarkt stürmen — alle haben dieselbe Idee"]},{"type":"stay_go","stay":{"label":"Fast immer bleiben","text":"Zu Hause hast du deine Vorräte — du bist besser ausgestattet als irgendwo sonst."},"go":{"label":"Gehen erwägen","text":"Heizung fällt im Winter aus, Wohnung unter 10°C. Störung dauert länger als deine Vorräte."}},{"type":"text","paragraphs":["Wasser sofort rationieren: 3 Liter pro Person pro Tag ist das Minimum. Unsicheres Leitungswasser 1 Minute abkochen.","Kühlschrankinhalt zuerst essen. Ungenutzte Räume abschließen und Haushalt in wärmere Zimmer zusammenziehen."]},{"type":"kit_ref","items":["droplets","archive","radio","banknote","pill"]},{"type":"text","paragraphs":["Dieses Szenario entfaltet sich langsam genug um gemeinsam zu planen. Wasserrationierung frühzeitig festlegen.","Ältere Verwandte in der Nähe frühzeitig kontrollieren — sie sind am verwundbarsten."]},{"type":"text_warning","paragraphs":["Behörden bestätigen Versorgungswiederherstellung über NINA oder Radio."],"warning":"Kit sofort wieder auffüllen und ehrlich beurteilen was dir fehlte — das ist das beste Feedback für nächstes Mal."}]},{"key":"industrie","name":"Industrieunfall","desc":"Chemische oder industrielle Gefahr","color":"#6B3D7A","related":["evakuierung","kommunikation"],"sections":[{"type":"text","paragraphs":["Eine nahe Fabrik oder chemische Anlage hat etwas Gefährliches freigesetzt. Die Schlüsselanweisung ist das Gegenteil der meisten Notfälle: nicht nach draußen gehen. Dich einschließen.","Du wirst das wahrscheinlich nie erleben — aber wenn doch, zählen die ersten 10 Minuten enorm."]},{"type":"text","paragraphs":["NINA sendet eine Warnung mit spezifischen Anweisungen. Laute Explosion gehört oder große Rauchwolke gesehen. Ungewöhnlicher Geruch draußen — chemisch oder brennend. Rettungsfahrzeuge in großer Zahl in eine Richtung."]},{"type":"steps","steps":["Sofort rein wenn du draußen bist — Kinder und Tiere mitnehmen","Alle Fenster, Türen und Lüftungsöffnungen vollständig schließen","Mechanische Lüftung und Klimaanlage ausschalten","NINA und Radio für spezifische Anweisungen — Empfehlung variiert je nach Stoff","Von Fenstern fernbleiben"],"warning":"Die Gefahr kann unsichtbar, geruchlos oder schon über dem sicheren Expositionslevel liegen."},{"type":"stay_go","stay":{"label":"Drinnen bleiben","text":"In den meisten Fällen — In-door-Schutz (Schutzraum) laut deutschem Zivilschutz."},"go":{"label":"Nur gehen wenn","text":"Behörden explizit Evakuierung anordnen. Direktes Brandrisiko für dein Gebäude."}},{"type":"text","paragraphs":["Bei ernstem Alarm: Türspalten mit nassen Handtüchern oder Klebeband abdichten. Telefon nur für Notfälle nutzen.","Offiziellen Anweisungen genau folgen — sie sagen dir wann gelüftet werden kann."]},{"type":"kit_ref","items":["radio","battery-charging","mask","hand","droplets"]},{"type":"text","paragraphs":["Wenn Familienmitglieder draußen sind: per SMS anweisen sofort ins nächste Gebäude zu gehen. Nicht fahren um sie abzuholen.","Schulen und Arbeitsplätze haben eigene Schutzraum-Protokolle — vertraue darauf."]},{"type":"text_warning","paragraphs":["NINA oder Radio erteilen explizite Entwarnung. Fenster erst öffnen nach offiziellem Freigabe — auch wenn der Geruch weg ist."],"warning":"Wenn jemand Symptome hatte: beim Hausarzt oder 116 117 melden und untersuchen lassen."}]},{"key":"kommunikation","name":"Kommunikationsausfall","desc":"Kein Netz, kein Internet","color":"#1A7A7A","related":["stromausfall","evakuierung","industrie"],"sections":[{"type":"text","paragraphs":["Kein Mobilfunknetz, kein Internet, kein Festnetz. Keine Anrufe, keine Nachrichten, keine Karten, keine Online-Zahlungen.","Desorientierend mehr als gefährlich — aber es legt bloß wie abhängig der Alltag von Konnektivität ist."]},{"type":"text","paragraphs":["Dein Handy zeigt kein Signal oder 'Nur Notrufe'. SMS senden nicht. Du kannst niemanden auf digitalem Weg erreichen. Andere um dich herum haben dasselbe Problem — es ist nicht dein Gerät."]},{"type":"steps","steps":["Bestätigen es ist ein Netzproblem — mit Nachbarn prüfen","Sofort Batterie-Radio einschalten — deine einzige zuverlässige Informationsquelle","Handy-Akku schonen: Flugzeugmodus, weniger Helligkeit, Apps schließen","Wenn mitten in Notfall: zur nächsten Polizei- oder Feuerwache gehen","Familienplan in Erinnerung rufen — du hast für diesen Moment vorbereitet"],"warning":"Das einzige Szenario wo dein vorher vereinbarter Treffpunkt und Zeitpunkt alles bedeuten."},{"type":"stay_go","stay":{"label":"Zu Hause bleiben","text":"Zu Hause sind deine Vorräte und dort suchen Familienmitglieder dich."},"go":{"label":"Zum Treffpunkt","text":"Wenn du von der Familie getrennt warst als es begann und das ist der vereinbarte Plan."}},{"type":"text","paragraphs":["Batterie-Radio auf Deutschlandfunk (90,2 FM). Handy-Akku rücksichtslos schonen.","SMS vor Anrufen versuchen wenn Signal kurz zurückkommt. Bargeld ist jetzt unerlässlich — Kartenzahlung funktioniert nicht."]},{"type":"kit_ref","items":["radio","battery-charging","banknote","file-text"]},{"type":"text_plan","paragraphs":["Dieses Szenario dreht sich fast ganz um Vorbereitung vor dem Notfall. Wichtige Nummern physisch notiert haben. Feste Treffzeit vereinbart haben.","Wenn getrennt: alle gehen zum Treffpunkt zur vereinbarten Uhrzeit."],"plan_ref":"treffpunkt","plan_ref2":"uhrzeit"},{"type":"text_warning","paragraphs":["Signal kehrt zurück und aufgehaltene Nachrichten beginnen einzutreffen. Radio bestätigt Netzwerkwiederherstellung."],"warning":"Familienplan jetzt vervollständigen. Heute Telefonnummern aufschreiben."}]}]};
+
+
+// ============================================================
+// MAP DATA
+// ============================================================
+// ============================================================
+// MAP DATA — injected by build.py (single-file) or fetched in dev mode
+// ============================================================
+const LOCATIONS = {"center":{"name":"Kleineweg 104, 12101 Berlin","lat":52.4725,"lng":13.3843},"radius_km":20,"categories":[{"id":"hospital","icon":"poi-hospital","label":"Krankenhaus","color":"#B03A2E","bg":"#FAECEA","default_on":true},{"id":"shelter","icon":"poi-shelter","label":"Notunterkunft","color":"#A07520","bg":"#FDF3DC","default_on":true},{"id":"pharmacy","icon":"pill","label":"Apotheke","color":"#3D6B4A","bg":"#E8F2EB","default_on":true},{"id":"fire","icon":"flame","label":"Feuerwache","color":"#C4521A","bg":"#F9EDE5","default_on":false},{"id":"police","icon":"poi-police","label":"Polizei","color":"#2560A0","bg":"#E8F0FB","default_on":false},{"id":"aed","icon":"heart-pulse","label":"Defibrillator","color":"#6B3D7A","bg":"#F0EBF5","default_on":false},{"id":"water","icon":"droplets","label":"Trinkwasser","color":"#1A7A7A","bg":"#E0F2F2","default_on":false}],"pois":{"hospital":[{"name":"Vivantes Klinikum Tempelhof","addr":"Tempelhöfer Damm 231","phone":"030 130 14-0","lat":52.4661,"lng":13.3859},{"name":"Charité — Campus Benjamin Franklin","addr":"Hindenburgdamm 30","phone":"030 450-0","lat":52.4489,"lng":13.3258},{"name":"Vivantes Klinikum Neukölln","addr":"Rudower Str. 48","phone":"030 130 14-0","lat":52.4695,"lng":13.4516},{"name":"DRK Kliniken Berlin Westend","addr":"Spandauer Damm 130","phone":"030 3035-0","lat":52.5077,"lng":13.3007},{"name":"St. Joseph Krankenhaus","addr":"Wüsthoffstr. 15","phone":"030 78802-0","lat":52.4742,"lng":13.3462},{"name":"Charité Campus Mitte","addr":"Charitéplatz 1","phone":"030 450-0","lat":52.5264,"lng":13.3774},{"name":"Charité Campus Virchow-Klinikum","addr":"Augustenburger Platz 1","phone":"030 450-0","lat":52.5431,"lng":13.3428},{"name":"Helios Emil-von-Behring Krankenhaus","addr":"Walterhöferstr. 11","phone":"030 8102-0","lat":52.4305,"lng":13.3019},{"name":"Immanuel Klinikum Friedenau","addr":"Rubensstr. 125","phone":"030 8109-0","lat":52.4706,"lng":13.3338},{"name":"Vivantes Auguste-Viktoria-Klinikum","addr":"Rubensstr. 125","phone":"030 2102-0","lat":52.4794,"lng":13.3278},{"name":"Vivantes Wenckebach-Klinikum","addr":"Wenckebachstr. 23","phone":"030 130 19-0","lat":52.4522,"lng":13.3819},{"name":"Martin-Luther-Krankenhaus","addr":"Caspar-Theyss-Str. 27–31","phone":"030 8955-0","lat":52.4761,"lng":13.2944},{"name":"Jüdisches Krankenhaus Berlin","addr":"Heinz-Galinski-Str. 1","phone":"030 4994-0","lat":52.5372,"lng":13.3411},{"name":"St. Gertrauden-Krankenhaus","addr":"Paretzer Str. 12","phone":"030 8272-0","lat":52.494,"lng":13.3134},{"name":"Sana Klinikum Lichtenberg","addr":"Fanningerstr. 32","phone":"030 5518-0","lat":52.5066,"lng":13.4908},{"name":"Evangelisches Krankenhaus Hubertus","addr":"Spanische Allee 10–14","phone":"030 8109-0","lat":52.4658,"lng":13.2667},{"name":"Krankenhaus Bethel Berlin","addr":"Kekuléstr. 28","phone":"030 7683-0","lat":52.4558,"lng":13.325},{"name":"Unfallkrankenhaus Berlin (UKB)","addr":"Warener Str. 7","phone":"030 5681-0","lat":52.4786,"lng":13.5536},{"name":"BG Klinikum Berlin","addr":"Roscherstr. 3","phone":"030 30860","lat":52.5094,"lng":13.4003},{"name":"Krankenhaus Waldfriede","addr":"Argentinische Allee 40","phone":"030 8109-0","lat":52.4414,"lng":13.2803}],"shelter":[{"name":"Notunterkunft Tempelhofer Feld","addr":"Columbiadamm 10","phone":"030 901 77-0","lat":52.473,"lng":13.401},{"name":"Columbiahalle","addr":"Columbiadamm 13","phone":"030 698 09 80","lat":52.4853,"lng":13.3935},{"name":"Sportpark Neukölln","addr":"Ganghoferstr. 3","phone":"030 6809-0","lat":52.4664,"lng":13.4511},{"name":"Rathaussaal Tempelhof","addr":"Tempelhofer Damm 165","phone":"030 901 77-0","lat":52.4777,"lng":13.3876},{"name":"Messehallen Berlin","addr":"Messedamm 22","phone":"030 3038-0","lat":52.5066,"lng":13.2756},{"name":"Velodrom Berlin","addr":"Paul-Heyse-Str. 26","phone":"030 4430-4430","lat":52.5451,"lng":13.4637},{"name":"Max-Schmeling-Halle","addr":"Am Falkplatz 1","phone":"030 4430-4430","lat":52.5397,"lng":13.4109},{"name":"Uber Arena","addr":"Mercedes-Platz 1","phone":"030 2060-70 899","lat":52.5023,"lng":13.4439},{"name":"Tempodrom","addr":"Möckernstr. 10","phone":"030 6953-3185","lat":52.5047,"lng":13.3825},{"name":"Horst-Dohm-Eisstadion","addr":"Glockenturmstr. 14","phone":"030 304 68 19","lat":52.4643,"lng":13.3194},{"name":"Friedrich-Ludwig-Jahn-Sportpark","addr":"Cantianstr. 24","phone":"030 4430-4430","lat":52.5382,"lng":13.3981},{"name":"Sportanlage Hasenheide","addr":"Hasenheide 62","phone":"030 6809-0","lat":52.4862,"lng":13.4177},{"name":"DRK Berlin Tempelhof-Schöneberg","addr":"Baseler Str. 1","phone":"030 856 05-0","lat":52.4845,"lng":13.3671},{"name":"THW OV Berlin-Tempelhof","addr":"Stubenrauchstr. 43","phone":"030 7540 710","lat":52.4585,"lng":13.4032},{"name":"Jahnturnhalle Neukölln","addr":"Ganghoferstr. 5","phone":"030 6809-0","lat":52.4793,"lng":13.4497},{"name":"Sporthalle Mariendorf","addr":"Mariendorfer Damm 237","phone":"030 7012-0","lat":52.4467,"lng":13.3845},{"name":"Palais am Funkturm","addr":"Hammarskjöldplatz 4","phone":"030 3038-0","lat":52.5075,"lng":13.2724},{"name":"Sport- und Erholungszentrum (SEZ)","addr":"Landsberger Allee 77","phone":"030 4221-400","lat":52.5128,"lng":13.4677},{"name":"Hangars Tempelhofer Feld","addr":"Platz der Luftbrücke 5","phone":"030 901 77-0","lat":52.4731,"lng":13.4041},{"name":"Estrel Convention Center","addr":"Sonnenallee 225","phone":"030 6831-0","lat":52.4715,"lng":13.4625}],"pharmacy":[{"name":"Goeken-Apotheke","addr":"Tempelhöfer Damm 157","phone":"030 752 57 58","lat":52.4744,"lng":13.3884},{"name":"Volksapotheke Neukölln","addr":"Karl-Marx-Str. 62","phone":"030 624 14 45","lat":52.4823,"lng":13.4362},{"name":"Adler-Apotheke Schöneberg","addr":"Hauptstr. 2","phone":"030 781 01 50","lat":52.4946,"lng":13.3668},{"name":"Stern-Apotheke","addr":"Mariannenplatz 2","phone":"030 614 29 50","lat":52.501,"lng":13.422},{"name":"Löwen-Apotheke Tempelhof","addr":"Boelckestr. 28","phone":"030 751 42 06","lat":52.4671,"lng":13.3934},{"name":"Viktoria-Apotheke","addr":"Gleditschstr. 5","phone":"030 216 10 00","lat":52.48,"lng":13.354},{"name":"Mariendorf-Apotheke","addr":"Mariendorfer Damm 3","phone":"030 621 40 57","lat":52.448,"lng":13.387},{"name":"Britz-Apotheke","addr":"Britzer Damm 173","phone":"030 604 10 97","lat":52.4482,"lng":13.4412},{"name":"Schiller-Apotheke Friedenau","addr":"Rheinstr. 44","phone":"030 851 17 44","lat":52.4685,"lng":13.327},{"name":"Rosen-Apotheke Kreuzberg","addr":"Gneisenaustr. 2","phone":"030 691 43 27","lat":52.4978,"lng":13.3818},{"name":"Bergmann-Apotheke","addr":"Bergmannstr. 2","phone":"030 693 26 07","lat":52.4902,"lng":13.3981},{"name":"Rixdorfer Apotheke","addr":"Karl-Marx-Str. 80","phone":"030 622 64 74","lat":52.4751,"lng":13.4415},{"name":"Hasenheide-Apotheke","addr":"Hasenheide 57","phone":"030 691 11 22","lat":52.487,"lng":13.4162},{"name":"Schöneberg-Apotheke","addr":"Martin-Luther-Str. 95","phone":"030 781 69 18","lat":52.4962,"lng":13.3557},{"name":"Wittenberg-Apotheke","addr":"Wittenbergplatz 1","phone":"030 218 20 67","lat":52.4997,"lng":13.3429},{"name":"Kurfürstendamm-Apotheke","addr":"Kurfürstendamm 216","phone":"030 882 34 86","lat":52.5037,"lng":13.3258},{"name":"Charlottenburg-Apotheke","addr":"Stuttgarter Platz 19","phone":"030 323 00 70","lat":52.5089,"lng":13.2973},{"name":"Wedding-Apotheke","addr":"Müllerstr. 152","phone":"030 454 54 63","lat":52.5412,"lng":13.3567},{"name":"Prenzlauer Berg Apotheke","addr":"Prenzlauer Allee 185","phone":"030 441 78 80","lat":52.5357,"lng":13.4269},{"name":"Treptow-Apotheke","addr":"Baumschulenstr. 78","phone":"030 632 72 73","lat":52.4826,"lng":13.4696},{"name":"Lichterfelde-Apotheke","addr":"Drakestr. 16","phone":"030 831 33 03","lat":52.4357,"lng":13.3145},{"name":"Steglitz-Apotheke","addr":"Schloßstr. 63","phone":"030 792 20 20","lat":52.4576,"lng":13.3228},{"name":"Spandau-Apotheke","addr":"Carl-Schurz-Str. 6","phone":"030 333 20 10","lat":52.5341,"lng":13.2121},{"name":"Rudow-Apotheke","addr":"Rudower Str. 55","phone":"030 663 45 67","lat":52.4282,"lng":13.4892},{"name":"Tempelhof-Apotheke","addr":"Alt-Tempelhof 6","phone":"030 785 05 27","lat":52.4723,"lng":13.3884},{"name":"Zehlendorf-Apotheke","addr":"Teltower Damm 12","phone":"030 801 40 14","lat":52.4336,"lng":13.2542}],"fire":[{"name":"Feuerwache Tempelhof","addr":"Ordensmeisterstr. 14","phone":"112","lat":52.4721,"lng":13.3863},{"name":"Feuerwache Neukölln","addr":"Sonnenallee 293","phone":"112","lat":52.4727,"lng":13.4492},{"name":"Feuerwache Friedenau","addr":"Saarstr. 18","phone":"112","lat":52.4652,"lng":13.3389},{"name":"Feuerwache Schöneberg","addr":"Hauptstr. 47","phone":"112","lat":52.4936,"lng":13.3671},{"name":"Feuerwache Britz","addr":"Buschkrugallee 28","phone":"112","lat":52.4536,"lng":13.4377},{"name":"Feuerwache Kreuzberg","addr":"Mehringdamm 114","phone":"112","lat":52.4983,"lng":13.4031},{"name":"Feuerwache Mitte","addr":"Linienstr. 110","phone":"112","lat":52.5213,"lng":13.4086},{"name":"Feuerwache Charlottenburg","addr":"Sybelstr. 2","phone":"112","lat":52.5162,"lng":13.3064},{"name":"Feuerwache Wedding","addr":"Rathenower Str. 40","phone":"112","lat":52.5438,"lng":13.3503},{"name":"Feuerwache Prenzlauer Berg","addr":"Sredzkistr. 67","phone":"112","lat":52.5378,"lng":13.4236},{"name":"Feuerwache Treptow","addr":"Baumschulenstr. 72","phone":"112","lat":52.4876,"lng":13.4682},{"name":"Feuerwache Steglitz","addr":"Albrechtstr. 7","phone":"112","lat":52.4581,"lng":13.3194},{"name":"Feuerwache Mariendorf","addr":"Mariendorfer Damm 147","phone":"112","lat":52.4481,"lng":13.3845},{"name":"Feuerwache Spandau","addr":"Moritzstr. 31","phone":"112","lat":52.5351,"lng":13.2028},{"name":"Feuerwache Lichtenberg","addr":"Siegfriedstr. 34","phone":"112","lat":52.5093,"lng":13.4819},{"name":"Feuerwache Zehlendorf","addr":"Teltower Damm 26","phone":"112","lat":52.4336,"lng":13.2542},{"name":"Feuerwache Köpenick","addr":"Friedrichshagener Str. 40","phone":"112","lat":52.4574,"lng":13.5749},{"name":"Feuerwache Reinickendorf","addr":"Residenzstr. 82","phone":"112","lat":52.5731,"lng":13.3406},{"name":"Feuerwache Flughafen BER","addr":"Willy-Brandt-Platz 1","phone":"112","lat":52.3653,"lng":13.4968}],"police":[{"name":"Polizeiabschnitt 42 Tempelhof","addr":"Kaiserin-Augusta-Str. 35","phone":"030 4664-42 0","lat":52.4684,"lng":13.3892},{"name":"Polizeiabschnitt 47 Neukölln","addr":"Karl-Marx-Str. 61","phone":"030 4664-47 0","lat":52.482,"lng":13.4381},{"name":"Polizeiabschnitt 43 Schöneberg","addr":"Ringstr. 75","phone":"030 4664-43 0","lat":52.4591,"lng":13.3601},{"name":"Polizeidirektion 4","addr":"Eiswaldtstr. 18","phone":"030 4664-4 0","lat":52.5044,"lng":13.3588},{"name":"Polizeiabschnitt 53 Kreuzberg","addr":"Friesenstr. 16","phone":"030 4664-53 0","lat":52.5028,"lng":13.4028},{"name":"Polizeiabschnitt 24 Charlottenburg","addr":"Knesebeckstr. 7–8","phone":"030 4664-24 0","lat":52.5172,"lng":13.3024},{"name":"Polizeiabschnitt 33 Mitte","addr":"Brunnenstr. 176","phone":"030 4664-33 0","lat":52.5261,"lng":13.3892},{"name":"Polizeiabschnitt 13 Wedding","addr":"Drontheimer Str. 13–14","phone":"030 4664-13 0","lat":52.5435,"lng":13.3603},{"name":"Polizeiabschnitt 63 Friedrichshain","addr":"Corinthstr. 7","phone":"030 4664-63 0","lat":52.5119,"lng":13.4473},{"name":"Polizeiabschnitt 22 Spandau","addr":"Flensburger Str. 24","phone":"030 4664-22 0","lat":52.5341,"lng":13.2091},{"name":"Polizeiabschnitt 74 Lichtenberg","addr":"Gotlindestr. 82","phone":"030 4664-74 0","lat":52.5067,"lng":13.4764},{"name":"Polizeiabschnitt 46 Steglitz","addr":"Schloßstr. 51","phone":"030 4664-46 0","lat":52.4533,"lng":13.3253},{"name":"Polizeiabschnitt 57 Treptow","addr":"Kiefholzstr. 1","phone":"030 4664-57 0","lat":52.4831,"lng":13.4638},{"name":"Polizeiabschnitt 37 Mariendorf","addr":"Mariendorfer Damm 275","phone":"030 4664-37 0","lat":52.445,"lng":13.39}],"aed":[{"name":"AED — Bahnhof Tempelhof","addr":"Ringbahnstr. 96","phone":"112","lat":52.4731,"lng":13.3864},{"name":"AED — Ullsteinhaus","addr":"Ullsteinstr. 76","phone":"112","lat":52.4665,"lng":13.3928},{"name":"AED — Bahnhof Südkreuz","addr":"Ostseeplatz 1","phone":"112","lat":52.4758,"lng":13.3654},{"name":"AED — REWE Neukölln","addr":"Karl-Marx-Str. 130","phone":"112","lat":52.4721,"lng":13.4407},{"name":"AED — Rathaus Tempelhof","addr":"Tempelhofer Damm 165","phone":"112","lat":52.4777,"lng":13.3876},{"name":"AED — Bahnhof Schöneberg","addr":"Innsbrucker Str. 25","phone":"112","lat":52.4924,"lng":13.3641},{"name":"AED — Bahnhof Hermannstraße","addr":"Hermannstr. 201","phone":"112","lat":52.4583,"lng":13.4311},{"name":"AED — Galeria Schloßstraße","addr":"Schloßstr. 101","phone":"112","lat":52.4572,"lng":13.3222},{"name":"AED — Kaufland Mariendorf","addr":"Mariendorfer Damm 307","phone":"112","lat":52.4452,"lng":13.38},{"name":"AED — Bahnhof Yorckstraße","addr":"Yorckstr. 40","phone":"112","lat":52.4858,"lng":13.3671},{"name":"AED — Bahnhof Neukölln","addr":"Karl-Marx-Str. 140","phone":"112","lat":52.4748,"lng":13.434},{"name":"AED — Bürgeramt Schöneberg","addr":"Freiherr-vom-Stein-Str. 1","phone":"112","lat":52.4862,"lng":13.3671},{"name":"AED — Bahnhof Innsbrucker Platz","addr":"Innsbrucker Str. 1","phone":"112","lat":52.4747,"lng":13.3447},{"name":"AED — IKEA Tempelhof","addr":"Sachsendamm 47","phone":"112","lat":52.4625,"lng":13.375},{"name":"AED — Bahnhof Lichterfelde West","addr":"Lichterfelde West Bahnhof","phone":"112","lat":52.4357,"lng":13.3145}],"water":[{"name":"Trinkwasserbrunnen Tempelhofer Feld","addr":"Tempelhofer Feld (Mitte)","phone":"–","lat":52.4742,"lng":13.4028},{"name":"Trinkwasserbrunnen Hasenheide","addr":"Volkspark Hasenheide","phone":"–","lat":52.4867,"lng":13.4188},{"name":"Trinkwasserbrunnen Insulaner","addr":"Insulaner Park","phone":"–","lat":52.4579,"lng":13.3506},{"name":"Trinkwasserbrunnen Südpark","addr":"Rudower Str. 50","phone":"–","lat":52.4582,"lng":13.443},{"name":"Trinkwasserbrunnen Volkspark Schöneberg","addr":"Volkspark Schöneberg","phone":"–","lat":52.486,"lng":13.36},{"name":"Trinkwasserbrunnen Gleisdreieckpark","addr":"Gleisdreieckpark","phone":"–","lat":52.4972,"lng":13.3736},{"name":"Trinkwasserbrunnen Tiergarten","addr":"Großer Tiergarten","phone":"–","lat":52.5139,"lng":13.3536},{"name":"Trinkwasserbrunnen Viktoriapark","addr":"Viktoriapark Kreuzberg","phone":"–","lat":52.4898,"lng":13.3816},{"name":"Trinkwasserbrunnen Britzer Garten","addr":"Sangerhauser Weg 1","phone":"–","lat":52.4399,"lng":13.4327},{"name":"Trinkwasserbrunnen Lichterfelder Park","addr":"Stadtpark Lichterfelde","phone":"–","lat":52.4283,"lng":13.3206}]}};
+let MAP_CENTER, CATEGORIES, POI_DATA;
+let activeCategories;
+
+// ============================================================
+// APP STATE
+// ============================================================
+const state = { screen:'home', scenario:null, tab:0, planValues:{} };
+let C = null;
+
+// ============================================================
+// INIT
+// ============================================================
+async function init() {
+  // ── Load content (de.json) ──
+  if (typeof CONTENT !== 'undefined') {
+    C = CONTENT;
+  } else {
+    try {
+      const lang = document.documentElement.lang || 'de';
+      const res = await fetch(`content/${lang}.json`);
+      C = await res.json();
+    } catch(e) {
+      document.getElementById('app-screens').innerHTML =
+        '<div style="padding:40px 20px;font-size:14px;color:#B03A2E;">Inhalt konnte nicht geladen werden.<br>Bitte starte über einen lokalen Server: <code>python3 -m http.server 8000</code></div>';
+      return;
+    }
+  }
+
+  // ── Load location data (locations.json) ──
+  if (typeof LOCATIONS !== 'undefined') {
+    MAP_CENTER = { lat: LOCATIONS.center.lat, lng: LOCATIONS.center.lng };
+    CATEGORIES = LOCATIONS.categories;
+    POI_DATA   = LOCATIONS.pois;
+  } else {
+    try {
+      const res = await fetch('content/locations.json');
+      const L = await res.json();
+      MAP_CENTER = { lat: L.center.lat, lng: L.center.lng };
+      CATEGORIES = L.categories;
+      POI_DATA   = L.pois;
+    } catch(e) {
+      document.getElementById('app-screens').innerHTML =
+        '<div style="padding:40px 20px;font-size:14px;color:#B03A2E;">Standortdaten konnten nicht geladen werden.<br>Bitte starte über einen lokalen Server: <code>python3 -m http.server 8000</code></div>';
+      return;
+    }
+  }
+
+  activeCategories = new Set(CATEGORIES.filter(c => c.default_on !== false).map(c => c.id));
+  render();
+  restoreFromStorage();
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function render() {
+  document.title = C.brand.name;
+  document.getElementById('alert-text').textContent = C.ui.alert_bar;
+  document.getElementById('alert-chevron').innerHTML = ic('chevron-right','rgba(255,255,255,0.7)',14);
+  const root = document.getElementById('app-screens');
+  root.innerHTML = buildHome() + buildScenarioList() + buildScenarioDetail() + buildKit() + buildHilfe() + buildPlan() + buildKarte();
+  showScreen('home');
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('screen-' + id);
+  if (el) {
+    el.classList.add('active');
+    const sa = el.querySelector('.scroll-area');
+    if (sa) sa.scrollTop = 0;
+    el.querySelectorAll('.nav-btn').forEach((b,i) => {
+      b.classList.toggle('active', ['home','notfaelle','kit','hilfe','karte','plan'][i] === id
+        || (id === 'scenario' && i === 1));
+    });
+    state.screen = id;
+    if (id === 'karte') setTimeout(() => initMap(), 80);
+  }
+}
+
+// ============================================================
+// NAV BAR (6 items)
+// ============================================================
+function navBar() {
+  const items = [
+    ['home',     C.ui.nav_home,       'home'],
+    ['notfaelle',C.ui.nav_emergencies,'shield-alert'],
+    ['kit',      C.ui.nav_kit,        'package'],
+    ['hilfe',    C.ui.nav_firstaid,   'heart-pulse'],
+    ['karte',    'Karte',             'map-pin'],
+    ['plan',     C.ui.nav_plan,       'user-circle'],
+  ];
+  return `<div class="bottom-nav">${items.map(([s,l,i]) =>
+    `<button class="nav-btn" onclick="showScreen('${s}')">${ic(i,'var(--text3)',20)}<span class="nav-btn-label">${l}</span></button>`
+  ).join('')}</div>`;
+}
+
+// ============================================================
+// HOME SCREEN
+// ============================================================
+function buildHome() {
+  const pf = C.plan_fields.flatMap(s => s.fields).filter(f => f.preview);
+  const previewRows = pf.map(f =>
+    `<div class="plan-row"><span class="plan-key">${f.label}</span><span class="plan-val empty" id="preview-${f.id}">${C.ui.plan_not_entered}</span></div>`
+  ).join('');
+  return `<div class="screen" id="screen-home">
+<div class="scroll-area">
+<div class="brand-header">
+  <div class="brand-name">${C.brand.name}</div>
+  <div class="brand-tagline-de">${C.brand.tagline_primary}</div>
+  <div class="brand-tagline-en">${C.brand.tagline_secondary}</div>
+</div>
+<div class="nav-grid">
+  <div class="nav-card" onclick="showScreen('notfaelle')">
+    <div class="nav-icon-wrap" style="background:#FAECEA;">${ic('shield-alert','#B03A2E',22)}</div>
+    <div class="nav-card-label">${C.ui.nav_emergencies}</div>
+    <div class="nav-card-hint">${C.scenarios.length} Szenarien</div>
+  </div>
+  <div class="nav-card" onclick="showScreen('kit')">
+    <div class="nav-icon-wrap" style="background:#E8F2EB;">${ic('package','#3D6B4A',22)}</div>
+    <div class="nav-card-label">${C.ui.nav_kit}</div>
+    <div class="nav-card-hint" id="kit-nav-hint">${C.kit.items_included.length + C.kit.items_personal.length} Einträge</div>
+  </div>
+  <div class="nav-card" onclick="showScreen('hilfe')">
+    <div class="nav-icon-wrap" style="background:#E8F0FB;">${ic('heart-pulse','#2560A0',22)}</div>
+    <div class="nav-card-label">${C.ui.nav_firstaid}</div>
+    <div class="nav-card-hint">Schnellzugriff</div>
+  </div>
+  <div class="nav-card alert-card" onclick="showScreen('plan')">
+    <div class="nav-icon-wrap" style="background:#F9EDE5;">${ic('user-circle','#C4521A',22)}</div>
+    <div class="nav-card-label">${C.ui.nav_plan}</div>
+    <div class="nav-card-hint warn" id="plan-nav-hint"></div>
+  </div>
+</div>
+<div class="map-preview-card" onclick="showScreen('karte')">
+  <div class="nav-icon-wrap" style="background:#F9EDE5;margin-bottom:0;">${ic('map-pin','#C4521A',22)}</div>
+  <div style="flex:1;">
+    <div class="nav-card-label">Notfallstandorte · Karte</div>
+    <div class="nav-card-hint" style="margin-top:2px;">Berlin Tempelhof · 20 km · Offline verfügbar</div>
+  </div>
+  <div style="flex-shrink:0;">${ic('chevron-right','var(--text3)',14)}</div>
+  <div class="map-preview-bg">🗺</div>
+</div>
+<div class="plan-preview" onclick="showScreen('plan')">
+  <div class="plan-preview-header">
+    <div class="plan-preview-title">${C.ui.home_plan_title}</div>
+    ${ic('chevron-right','var(--text3)',14)}
+  </div>
+  ${previewRows}
+</div>
+<div class="tip-card">
+  <div style="flex-shrink:0;margin-top:1px;">${ic('lightbulb','#3D6B4A',18)}</div>
+  <div>
+    <div class="tip-title">${C.ui.home_tip_title}</div>
+    <div class="tip-text">${C.ui.home_tip_body}</div>
+  </div>
+</div>
+<div style="height:20px;"></div>
+</div>
+${navBar()}
+</div>`;
+}
+
+// ============================================================
+// KARTE SCREEN
+// ============================================================
+function buildKarte() {
+  const chips = CATEGORIES.map(cat =>
+    `<button class="map-filter-chip ${cat.default_on === false ? 'dimmed' : ''}" data-cat="${cat.id}"
+      style="${cat.default_on === false ? '' : 'background:' + cat.bg + ';border-color:' + cat.color + ';color:' + cat.color + ';'}"
+      onclick="toggleCategory('${cat.id}')">${ic(cat.icon, cat.default_on === false ? 'var(--text3)' : cat.color, 13, 1.5)} ${cat.label}</button>`
+  ).join('');
+  return `<div class="screen" id="screen-karte">
+<div class="top-bar">
+  <button class="back-btn" onclick="showScreen('home')">${ic('chevron-left','currentColor',16)}</button>
+  <div style="flex:1;">
+    <div class="top-bar-title">Karte</div>
+    <div class="top-bar-sub">Notfallstandorte · ${MAP_CENTER.name || "20 km Radius"}</div>
+  </div>
+  <div class="map-offline-badge">⬇ Offline</div>
+</div>
+<div class="map-filter-bar">${chips}</div>
+<div class="screen-map-inner">
+  <div id="map"></div>
+  <div class="map-info-bar" id="map-info-bar">Lade Standorte …</div>
+  <div class="map-attribution">Protomaps · MapLibre GL JS</div>
+</div>
+${navBar()}
+</div>`;
+}
+
+// ============================================================
+// MAP INIT (lazy — loads MapLibre only when Karte screen opens)
+// ============================================================
+let mapObj = null;
+let mapReady = false;
+const markersByCategory = {};
+
+function generateCircle(cLng, cLat, radiusKm, n=72) {
+  const coords = [];
+  for (let i = 0; i <= n; i++) {
+    const a = (i / n) * 2 * Math.PI;
+    const dLat = radiusKm / 110.574;
+    const dLng = radiusKm / (111.32 * Math.cos(cLat * Math.PI / 180));
+    coords.push([cLng + dLng * Math.cos(a), cLat + dLat * Math.sin(a)]);
+  }
+  return { type:'Feature', geometry:{ type:'Polygon', coordinates:[coords] }, properties:{} };
+}
+
+function initMap() {
+  if (mapReady) {
+    if (mapObj) setTimeout(() => mapObj && mapObj.resize(), 50);
+    return;
+  }
+  if (!window.maplibregl) {
+    if (!document.getElementById('maplibre-js')) {
+      const css = document.createElement('link');
+      css.rel = 'stylesheet';
+      css.href = 'https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css';
+      document.head.appendChild(css);
+      const js = document.createElement('script');
+      js.id = 'maplibre-js';
+      js.src = 'https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js';
+      js.onload = () => _doInitMap();
+      document.head.appendChild(js);
+    }
+    return;
+  }
+  _doInitMap();
+}
+
+function _doInitMap() {
+  if (mapReady) return;
+  const container = document.getElementById('map');
+  if (!container || container.offsetHeight === 0) {
+    setTimeout(_doInitMap, 60);
+    return;
+  }
+  mapReady = true;
+
+  mapObj = new maplibregl.Map({
+    container: 'map',
+    // PRODUCTION: swap style for Protomaps PMTiles source:
+    // style: { version:8, sources:{ pm:{ type:'vector', url:'pmtiles://your.pmtiles' }}, layers:[...] }
+    style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
+    center: [MAP_CENTER.lng, MAP_CENTER.lat],
+    zoom: 11.2,
+    attributionControl: false,
+  });
+
+  mapObj.on('load', () => {
+    // 20 km radius ring
+    mapObj.addSource('radius', { type:'geojson', data: generateCircle(MAP_CENTER.lng, MAP_CENTER.lat, 20) });
+    mapObj.addLayer({ id:'radius-fill', type:'fill', source:'radius',
+      paint:{ 'fill-color':'#C4521A', 'fill-opacity':0.05 }
+    });
+    mapObj.addLayer({ id:'radius-line', type:'line', source:'radius',
+      paint:{ 'line-color':'#C4521A', 'line-width':1.5, 'line-dasharray':[4,3], 'line-opacity':0.6 }
+    });
+
+    // Home dot
+    const homeDot = document.createElement('div');
+    homeDot.className = 'home-dot-marker';
+    new maplibregl.Marker({ element:homeDot, anchor:'center' })
+      .setLngLat([MAP_CENTER.lng, MAP_CENTER.lat])
+      .addTo(mapObj);
+
+    // POI markers
+    CATEGORIES.forEach(cat => {
+      markersByCategory[cat.id] = [];
+      POI_DATA[cat.id].forEach(poi => {
+        const el = document.createElement('div');
+        el.className = 'poi-marker';
+        el.style.background = cat.bg;
+        el.style.borderColor = cat.color;
+        el.innerHTML = ic(cat.icon, cat.color, 14, 1.5);
+
+        const popup = new maplibregl.Popup({ offset:18, closeButton:true, maxWidth:'200px' })
+          .setHTML(`<div style="font-family:'DM Sans',sans-serif;">
+            <div style="font-size:13px;font-weight:500;color:#1A1714;margin-bottom:3px;">${poi.name}</div>
+            <div style="font-size:11px;color:#6B6560;line-height:1.4;">${poi.addr}</div>
+            ${poi.phone !== '–' ? `<div style="font-size:12px;color:${cat.color};margin-top:6px;font-weight:500;">📞 ${poi.phone}</div>` : ''}
+          </div>`);
+
+        const marker = new maplibregl.Marker({ element:el, anchor:'center' })
+          .setLngLat([poi.lng, poi.lat])
+          .setPopup(popup)
+          .addTo(mapObj);
+
+        markersByCategory[cat.id].push(marker);
+      });
+    });
+
+    updateInfoBar();
+  });
+}
+
+function toggleCategory(id) {
+  if (activeCategories.has(id)) {
+    activeCategories.delete(id);
+  } else {
+    activeCategories.add(id);
+  }
+  CATEGORIES.forEach(cat => {
+    const visible = activeCategories.has(cat.id);
+    (markersByCategory[cat.id] || []).forEach(m => {
+      m.getElement().style.display = visible ? 'flex' : 'none';
+    });
+  });
+  document.querySelectorAll('.map-filter-chip').forEach(chip => {
+    const cid = chip.dataset.cat;
+    const cat = CATEGORIES.find(c => c.id === cid);
+    if (!cat) return;
+    chip.classList.toggle('dimmed', !activeCategories.has(cid));
+    if (activeCategories.has(cid)) {
+      chip.style.background = cat.bg;
+      chip.style.borderColor = cat.color;
+      chip.style.color = cat.color;
+    }
+  });
+  updateInfoBar();
+}
+
+function updateInfoBar() {
+  const bar = document.getElementById('map-info-bar');
+  if (!bar) return;
+  const total = [...activeCategories].reduce((sum, id) => sum + (POI_DATA[id]?.length || 0), 0);
+  bar.textContent = `${total} Standorte sichtbar · ${MAP_CENTER.name || (MAP_CENTER.lat.toFixed(4) + ", " + MAP_CENTER.lng.toFixed(4))} · 20 km`;
+}
+
+
+
+
+
+// ============================================================
+// SCENARIO LIST
+// ============================================================
+function buildScenarioList() {
+  const items = C.scenarios.map(s =>
+    `<div class="scenario-item" onclick="A.showScenario('${s.key}')">
+      <div class="scenario-dot" style="background:${s.color};"></div>
+      <div class="scenario-info"><div class="scenario-name">${s.name}</div><div class="scenario-desc">${s.desc}</div></div>
+      ${ic('chevron-right','var(--text3)',16)}
+    </div>`).join('');
+  return `<div class="screen" id="screen-notfaelle">
+<div class="top-bar">
+  <button class="back-btn" onclick="showScreen('home')">${ic('chevron-left','currentColor',16)}</button>
+  <div><div class="top-bar-title">${C.ui.emergencies_title}</div><div class="top-bar-sub">${C.ui.emergencies_subtitle}</div></div>
+</div>
+<div class="scroll-area"><div class="scenario-list">
+  <div class="scenario-section-label">${C.ui.emergencies_section_label}</div>
+  ${items}
+</div><div style="height:16px;"></div></div>
+${navBar()}</div>`;
+}
+
+// ============================================================
+// SCENARIO DETAIL
+// ============================================================
+function buildScenarioDetail() {
+  return `<div class="screen" id="screen-scenario">
+<div class="top-bar">
+  <button class="back-btn" onclick="showScreen('notfaelle')">${ic('chevron-left','currentColor',16)}</button>
+  <div><div class="top-bar-title" id="scenario-title"></div><div class="top-bar-sub">${C.ui.scenario_subtitle}</div></div>
+</div>
+<div class="section-tabs" id="section-tabs"></div>
+<div class="scroll-area">
+  <div id="scenario-content" class="section-content"></div>
+  <div class="related-section">
+    <div class="related-title">${C.ui.related_title}</div>
+    <div class="related-chips" id="related-chips"></div>
+  </div>
+  <div style="height:16px;"></div>
+</div>
+${navBar()}</div>`;
+}
+
+// ============================================================
+// KIT SCREEN
+// ============================================================
+function buildKit() {
+  const included = C.kit.items_included.map(item =>
+    `<div class="kit-item" onclick="A.toggleKit(this)">
+      <div class="kit-icon-wrap">${ic(item.icon,item.color,22)}</div>
+      <span class="kit-name">${item.label}</span>
+      <div class="kit-check">${ic('check','white',13)}</div>
+    </div>`).join('');
+  const personal = C.kit.items_personal.map(item =>
+    `<div class="kit-item" onclick="A.toggleKit(this)">
+      <div class="kit-icon-wrap">${ic(item.icon,item.color,22)}</div>
+      <span class="kit-name">${item.label}</span>
+      <div class="kit-check">${ic('check','white',13)}</div>
+    </div>`).join('');
+  return `<div class="screen" id="screen-kit">
+<div class="top-bar">
+  <button class="back-btn" onclick="showScreen('home')">${ic('chevron-left','currentColor',16)}</button>
+  <div><div class="top-bar-title">${C.ui.kit_title}</div><div class="top-bar-sub">${C.ui.kit_subtitle}</div></div>
+</div>
+<div class="kit-progress-label">
+  <span id="kit-count-label">0 von ${C.kit.items_included.length+C.kit.items_personal.length} erledigt</span>
+  <span id="kit-percent-label">0%</span>
+</div>
+<div class="kit-progress"><div class="kit-progress-bar" id="kit-progress-bar" style="width:0%"></div></div>
+<div class="scroll-area">
+  <div class="kit-full-section">
+    <div class="kit-full-title">${C.ui.kit_included_title}</div>
+    <div class="kit-full-card kit-items">${included}</div>
+    <div class="kit-full-title">${C.ui.kit_personal_title}</div>
+    <div class="kit-full-card kit-items">${personal}</div>
+    <div class="tip-card" style="margin:0 0 16px;">
+      ${ic('triangle-alert','#A0720A',18)}
+      <div><div class="tip-title" style="color:var(--amber);">${C.ui.kit_warning_title}</div>
+      <div class="tip-text">${C.ui.kit_warning_body}</div></div>
+    </div>
+  </div>
+</div>
+${navBar()}</div>`;
+}
+
+// ============================================================
+// HILFE SCREEN
+// ============================================================
+function buildHilfe() {
+  const cards = C.firstaid.map(item => {
+    let body = '';
+    if (item.type === 'steps') {
+      body = item.steps.map((s,i) => `<div class="hilfe-step"><div class="hilfe-num">${i+1}</div><div class="hilfe-text">${s}</div></div>`).join('');
+    } else if (item.type === 'fast') {
+      body = `<div class="fast-grid">${item.fast.map(f => `<div class="fast-item"><div class="fast-letter">${f.letter}</div><div class="fast-word">${f.word}</div><div class="fast-desc">${f.desc}</div></div>`).join('')}</div>`;
+    } else {
+      body = item.paragraphs.map(p => `<p style="font-size:13px;line-height:1.55;color:var(--text);margin-bottom:8px;">${p}</p>`).join('');
+    }
+    return `<div class="hilfe-card" onclick="A.toggleHilfe(this)">
+      <div class="hilfe-card-header">
+        <div class="hilfe-card-icon" style="background:var(--red-light);">${ic(item.icon,'#B03A2E',20)}</div>
+        <div class="hilfe-card-info"><div class="hilfe-card-title">${item.title}</div><div class="hilfe-card-sub">${item.subtitle}</div></div>
+        <div class="hilfe-toggle">${ic('chevron-down','currentColor',16)}</div>
+      </div>
+      <div class="hilfe-body">${body}</div>
+    </div>`;
+  }).join('');
+  return `<div class="screen" id="screen-hilfe">
+<div class="top-bar">
+  <button class="back-btn" onclick="showScreen('home')">${ic('chevron-left','currentColor',16)}</button>
+  <div><div class="top-bar-title">${C.ui.firstaid_title}</div><div class="top-bar-sub">${C.ui.firstaid_subtitle}</div></div>
+</div>
+<div class="scroll-area">
+  <div style="margin:12px 16px 10px;">
+    <div class="tip-card" style="margin:0;background:var(--red-light);border-color:rgba(176,58,46,0.2);">
+      ${ic('phone','#B03A2E',18)}
+      <div><div class="tip-title" style="color:var(--red);">${C.ui.firstaid_call_title}</div>
+      <div class="tip-text">${C.ui.firstaid_call_body}</div></div>
+    </div>
+  </div>
+  ${cards}
+  <div style="height:16px;"></div>
+</div>
+${navBar()}</div>`;
+}
+
+// ============================================================
+// PLAN SCREEN
+// ============================================================
+function buildPlan() {
+  const sections = C.plan_fields.map(sec => {
+    const fields = sec.fields.map(f =>
+      `<div class="field-group">
+        <div class="field-label">${f.label}</div>
+        <input class="field-input" id="plan-${f.id}" placeholder="${f.placeholder}" oninput="A.updatePreview()" />
+        ${f.hint ? `<div class="field-hint">${f.hint}</div>` : ''}
+      </div>`).join('');
+    return `<div class="plan-section">
+      <div class="plan-section-title">${sec.section_title}</div>
+      <div class="plan-section-desc">${sec.section_desc}</div>
+      ${fields}
+    </div><div class="divider"></div>`;
+  }).join('');
+  return `<div class="screen" id="screen-plan">
+<div class="top-bar">
+  <button class="back-btn" onclick="showScreen('home')">${ic('chevron-left','currentColor',16)}</button>
+  <div><div class="top-bar-title">${C.ui.plan_title}</div><div class="top-bar-sub">${C.ui.plan_subtitle}</div></div>
+</div>
+<div class="scroll-area">
+  <div class="plan-section"><div class="plan-section-desc" style="margin-bottom:0;padding-top:4px;">${C.ui.plan_intro}</div></div>
+  <div class="divider"></div>
+  ${sections}
+  <button class="save-btn" onclick="A.savePlan()">${C.ui.plan_save_button}</button>
+  <div class="saved-msg" id="saved-msg">${C.ui.plan_saved_message}</div>
+</div>
+${navBar()}</div>`;
+}
+
+// ============================================================
+// ACTIONS
+// ============================================================
+const A = {
+  showScenario(key) {
+    const s = C.scenarios.find(x => x.key === key);
+    if (!s) return;
+    state.scenario = key;
+    document.getElementById('scenario-title').textContent = s.name;
+    const tabs = document.getElementById('section-tabs');
+    tabs.innerHTML = s.sections.map((sec,i) =>
+      `<button class="tab-btn${i===0?' active':''}" onclick="A.switchTab(${i})">${C.ui.tab_labels[i]||('Tab '+(i+1))}</button>`).join('');
+    this.renderTab(s, 0);
+    const chips = document.getElementById('related-chips');
+    chips.innerHTML = (s.related||[]).map(r => {
+      const rel = C.scenarios.find(x => x.key === r);
+      return rel ? `<div class="related-chip" onclick="A.showScenario('${r}')">${rel.name}</div>` : '';
+    }).join('');
+    showScreen('scenario');
+  },
+
+  switchTab(i) {
+    const s = C.scenarios.find(x => x.key === state.scenario);
+    if (!s) return;
+    state.tab = i;
+    document.querySelectorAll('#section-tabs .tab-btn').forEach((b,j) => b.classList.toggle('active', j===i));
+    this.renderTab(s, i);
+    document.querySelector('#screen-scenario .scroll-area').scrollTop = 0;
+  },
+
+  renderTab(s, i) {
+    const sec = s.sections[i];
+    if (!sec) return;
+    const el = document.getElementById('scenario-content');
+    el.innerHTML = `<div class="section-heading">${C.ui.tab_full_labels[i]||''}</div>` + this.renderSection(sec);
+  },
+
+  renderSection(sec) {
+    if (sec.type === 'text' || sec.type === 'text_warning') {
+      let html = `<div class="section-body">${sec.paragraphs.map(p=>`<p>${p}</p>`).join('')}</div>`;
+      if (sec.warning) html += `<div class="warning-box">${sec.warning}</div>`;
+      return html;
+    }
+    if (sec.type === 'text_plan') {
+      let html = `<div class="section-body">${sec.paragraphs.map(p=>`<p>${p}</p>`).join('')}</div>`;
+      if (sec.plan_ref) {
+        const v = state.planValues[sec.plan_ref] || '';
+        html += `<div style="background:var(--accent-light);border-radius:var(--radius-sm);padding:11px 13px;margin-top:12px;font-size:13px;">
+          <span style="color:var(--text2);">Dein Treffpunkt: </span>
+          <span data-plan-preview="${sec.plan_ref}" style="color:${v?'var(--green)':'var(--accent)'};">${v||C.ui.plan_ref_not_entered}</span>
+        </div>`;
+      }
+      return html;
+    }
+    if (sec.type === 'steps') {
+      let html = `<ul class="steps">${sec.steps.map((s,i)=>`<li class="step"><div class="step-num">${i+1}</div><div class="step-text">${s}</div></li>`).join('')}</ul>`;
+      if (sec.warning) html += `<div class="warning-box">${sec.warning}</div>`;
+      return html;
+    }
+    if (sec.type === 'stay_go') {
+      let rows = '';
+      if (sec.go_only) {
+        rows = `<div class="stay-go-row"><span class="badge badge-go">${sec.go.label}</span><span class="stay-go-text">${sec.go.text}</span></div>`;
+        if (sec.note) rows += `<div class="stay-go-row"><span class="badge badge-warning">${sec.note.label}</span><span class="stay-go-text">${sec.note.text}</span></div>`;
+      } else {
+        rows = `<div class="stay-go-row"><span class="badge badge-stay">${sec.stay.label}</span><span class="stay-go-text">${sec.stay.text}</span></div>
+                <div class="stay-go-row"><span class="badge badge-go">${sec.go.label}</span><span class="stay-go-text">${sec.go.text}</span></div>`;
+        if (sec.warning) rows += `<div class="warning-box">${sec.warning}</div>`;
+      }
+      return `<div class="stay-go">${rows}</div>`;
+    }
+    if (sec.type === 'kit_ref') {
+      const allItems = [...C.kit.items_included, ...C.kit.items_personal];
+      const items = sec.items.map(key => {
+        const it = allItems.find(x => x.icon === key);
+        return it ? `<div class="kit-item" style="cursor:default;">
+          <div class="kit-icon-wrap">${ic(it.icon,it.color,22)}</div>
+          <span class="kit-name">${it.label}</span>
+        </div>` : '';
+      }).join('');
+      return `<div class="section-body"><p>Hol diese Sachen aus deinem Kit:</p></div><div class="kit-full-card kit-items" style="margin-top:4px;">${items}</div>`;
+    }
+    return '';
+  },
+
+  toggleKit(item) {
+    const check = item.querySelector('.kit-check');
+    check.classList.toggle('checked');
+    this.updateKitProgress();
+    this.saveKitState();
+  },
+
+  saveKitState() {
+    try {
+      const checks = [...document.querySelectorAll('#screen-kit .kit-item')].map(item => ({
+        label: item.querySelector('.kit-name').textContent,
+        checked: item.querySelector('.kit-check').classList.contains('checked')
+      }));
+      localStorage.setItem('rustenburgh_kit', JSON.stringify(checks));
+    } catch(e) {}
+  },
+
+  updateKitProgress() {
+    const all = document.querySelectorAll('#screen-kit .kit-check');
+    const done = document.querySelectorAll('#screen-kit .kit-check.checked');
+    const pct = Math.round((done.length / all.length) * 100);
+    if (document.getElementById('kit-progress-bar')) {
+      document.getElementById('kit-progress-bar').style.width = pct + '%';
+      document.getElementById('kit-count-label').textContent = `${done.length} ${C.ui.kit_progress_of} ${all.length} ${C.ui.kit_progress_done}`;
+      document.getElementById('kit-percent-label').textContent = pct + '%';
+      const hint = document.getElementById('kit-nav-hint');
+      if (hint) { hint.textContent = pct===100 ? C.ui.kit_nav_complete : `${done.length} ${C.ui.kit_progress_of} ${all.length}`; hint.className = pct===100 ? 'nav-card-hint ok' : 'nav-card-hint'; }
+    }
+  },
+
+  toggleHilfe(card) { card.classList.toggle('open'); },
+
+  updatePreview() {
+    const allFields = C.plan_fields.flatMap(s => s.fields);
+    allFields.forEach(f => {
+      const input = document.getElementById(`plan-${f.id}`);
+      if (!input) return;
+      state.planValues[f.id] = input.value;
+      if (f.preview) {
+        const el = document.getElementById(`preview-${f.id}`);
+        if (el) { el.textContent = input.value || C.ui.plan_not_entered; el.className = 'plan-val ' + (input.value ? 'filled' : 'empty'); }
+      }
+    });
+    document.querySelectorAll('[data-plan-preview]').forEach(el => {
+      const key = el.dataset.planPreview;
+      const val = state.planValues[key] || '';
+      el.textContent = val || C.ui.plan_ref_not_entered;
+      el.style.color = val ? 'var(--green)' : 'var(--accent)';
+    });
+  },
+
+  savePlan() {
+    this.updatePreview();
+    const required = C.plan_fields.flatMap(s => s.fields).filter(f => f.preview);
+    const missing = required.filter(f => !state.planValues[f.id]?.trim()).length;
+    const hint = document.getElementById('plan-nav-hint');
+    if (hint) {
+      hint.textContent = missing === 0 ? C.ui.plan_complete : `${missing} ${missing===1 ? C.ui.plan_missing_singular : C.ui.plan_missing_plural}`;
+      hint.className = missing === 0 ? 'nav-card-hint ok' : 'nav-card-hint warn';
+    }
+    try { localStorage.setItem('rustenburgh_plan', JSON.stringify(state.planValues)); } catch(e) {}
+    const msg = document.getElementById('saved-msg');
+    if (msg) { msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000); }
+  },
+
+  ninaAlert() {
+    alert(`${C.ui.alert_popup_title}\n\n${C.ui.alert_popup_body}`);
+  }
+};
+
+// ============================================================
+// RESTORE FROM STORAGE
+// ============================================================
+function restoreFromStorage() {
+  try {
+    const saved = localStorage.getItem('rustenburgh_plan');
+    if (saved) {
+      const values = JSON.parse(saved);
+      Object.entries(values).forEach(([id, val]) => {
+        const input = document.getElementById(`plan-${id}`);
+        if (input && val) { input.value = val; state.planValues[id] = val; }
+      });
+      A.updatePreview();
+      const required = C.plan_fields.flatMap(s => s.fields).filter(f => f.preview);
+      const missing = required.filter(f => !state.planValues[f.id]?.trim()).length;
+      const hint = document.getElementById('plan-nav-hint');
+      if (hint) {
+        hint.textContent = missing === 0 ? C.ui.plan_complete : `${missing} ${missing===1 ? C.ui.plan_missing_singular : C.ui.plan_missing_plural}`;
+        hint.className = missing === 0 ? 'nav-card-hint ok' : 'nav-card-hint warn';
+      }
+    }
+  } catch(e) {}
+  try {
+    const saved = localStorage.getItem('rustenburgh_kit');
+    if (saved) {
+      const checks = JSON.parse(saved);
+      const kitItems = [...document.querySelectorAll('#screen-kit .kit-item')];
+      checks.forEach(({ label, checked }) => {
+        const item = kitItems.find(el => el.querySelector('.kit-name').textContent === label);
+        if (item && checked) {
+          const c = item.querySelector('.kit-check');
+          c.classList.add('checked');
+          c.innerHTML = ic('check','white',13);
+        }
+      });
+      A.updateKitProgress();
+    }
+  } catch(e) {}
+}
+
+init();
+</script>
+</body>
+</html>
